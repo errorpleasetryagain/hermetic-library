@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibration Guide — Hermetic Library</title>
+    <style>
+        :root {
+            --void: #0a0a0f;
+            --deep-purple: #1a1a2e;
+            --midnight: #16213e;
+            --gold: #d4af37;
+            --text: #f0f0f0;
+            --muted: #888;
+            --vibe-1: #4a0000;
+            --vibe-2: #6a0000;
+            --vibe-3: #8a0000;
+            --vibe-4: #aa0000;
+            --vibe-5: #aa5500;
+            --vibe-6: #aaaa00;
+            --vibe-7: #55aa00;
+            --vibe-8: #00aa55;
+            --vibe-9: #00aaaa;
+            --vibe-10: #00ffff;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--void);
+            color: var(--text);
+            line-height: 1.8;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--deep-purple);
+            border-bottom: 1px solid var(--gold);
+            padding: 1rem 2rem;
+            z-index: 100;
+            margin: -2rem -2rem 2rem -2rem;
+        }
+        .nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.9rem;
+        }
+        .nav a:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .section {
+            background: var(--deep-purple);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .section h2 {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+        .section h3 {
+            color: var(--gold);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.3rem;
+        }
+        .scale-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        .scale-level {
+            text-align: center;
+            padding: 1rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--gold);
+        }
+        .scale-level .num {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+        .scale-level .desc {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        .level-1 { background: var(--vibe-1); }
+        .level-2 { background: var(--vibe-2); }
+        .level-3 { background: var(--vibe-3); }
+        .level-4 { background: var(--vibe-4); }
+        .level-5 { background: var(--vibe-5); }
+        .level-6 { background: var(--vibe-6); color: #000; }
+        .level-7 { background: var(--vibe-7); color: #000; }
+        .level-8 { background: var(--vibe-8); color: #000; }
+        .level-9 { background: var(--vibe-9); color: #000; }
+        .level-10 { background: var(--vibe-10); color: #000; }
+        .technique-box {
+            background: var(--midnight);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .technique-box h4 {
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+        .technique-box ol, .technique-box ul {
+            margin-left: 1.5rem;
+            line-height: 2;
+        }
+        .symbols {
+            text-align: center;
+            font-size: 2rem;
+            margin: 2rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--gold);
+            text-decoration: none;
+            border: 1px solid var(--gold);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 4px solid #ff6b35;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning-box h4 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+        ul {
+            margin-left: 1.5rem;
+            line-height: 2;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <ul>
+            <li><a href="../index.html">📚 Library</a></li>
+            <li><a href="../study/syllabus.html">📖 Syllabus</a></li>
+            <li><a href="meditation-manual.html">🧘 Meditation</a></li>
+            <li><a href="vibration-guide.html">⚡ Vibration</a></li>
+            <li><a href="ritual-guide.html">🔮 Ritual</a></li>
+            <li><a href="journal.html">📓 Journal</a></li>
+        </ul>
+    </nav>
+
+    <div class="symbols">☤ 🜚 ☽ ☉</div>
+
+    <h1>Vibration Guide</h1>
+    <p class="subtitle">Technical Manual for Energy Awareness & Manipulation</p>
+
+    <div class="section">
+        <h2>What Vibration Is (Actually)</h2>
+        <p>Everything vibrates. Not metaphorically — <strong>literally</strong>. Atoms vibrate. Light vibrates. Thoughts vibrate. Emotions vibrate. The difference between you and a stone is vibrational rate.</p>
+        <p style="margin-top: 1rem;">Hermeticism teaches: <strong>you can change your vibration deliberately</strong>. This is the core skill. Raise vibration = clarity, energy, manifestation. Lower vibration = grounding, stability, rest.</p>
+    </div>
+
+    <div class="section">
+        <h2>The Vibration Scale (1-10)</h2>
+        <p>Learn this scale. Check your vibration multiple times daily. Within 2 weeks, you'll feel it instantly.</p>
+
+        <div class="scale-container">
+            <div class="scale-level level-1">
+                <span class="num">1</span>
+                <span class="desc">Dead/Numb</span>
+            </div>
+            <div class="scale-level level-2">
+                <span class="num">2</span>
+                <span class="desc">Depressed/Heavy</span>
+            </div>
+            <div class="scale-level level-3">
+                <span class="num">3</span>
+                <span class="desc">Apathetic/Tired</span>
+            </div>
+            <div class="scale-level level-4">
+                <span class="num">4</span>
+                <span class="desc">Fearful/Anxious</span>
+            </div>
+            <div class="scale-level level-5">
+                <span class="num">5</span>
+                <span class="desc">Neutral/Normal</span>
+            </div>
+            <div class="scale-level level-6">
+                <span class="num">6</span>
+                <span class="desc">Calm/Focused</span>
+            </div>
+            <div class="scale-level level-7">
+                <span class="num">7</span>
+                <span class="desc">Energetic/Clear</span>
+            </div>
+            <div class="scale-level level-8">
+                <span class="num">8</span>
+                <span class="desc">Joyful/Radiant</span>
+            </div>
+            <div class="scale-level level-9">
+                <span class="num">9</span>
+                <span class="desc">Ecstatic/Unified</span>
+            </div>
+            <div class="scale-level level-10">
+                <span class="num">10</span>
+                <span class="desc">Divine/Gnosis</span>
+            </div>
+        </div>
+
+        <h3>How to Use This Scale</h3>
+        <ul>
+            <li><strong>Morning check:</strong> What's my vibration on waking? (Records baseline)</li>
+            <li><strong>Pre-practice:</strong> What is it before meditation/ritual? (Measures starting point)</li>
+            <li><strong>Post-practice:</strong> What is it after? (Measures effectiveness)</li>
+            <li><strong>Random checks:</strong> 3-5x daily, just ask "What number am I?" (Builds awareness)</li>
+            <li><strong>Trigger tracking:</strong> What raises you? What lowers you? (Identifies patterns)</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Feeling Vibration (Calibration)</h2>
+        <p>Most people can't feel vibration at first. You've been trained to ignore it. This recalibrates your sensitivity.</p>
+
+        <div class="technique-box">
+            <h4>Exercise 1: Hand Sensitivity</h4>
+            <ol>
+                <li>Rub your hands together vigorously for 30 seconds</li>
+                <li>Stop. Hold palms facing each other, 6 inches apart</li>
+                <li>Slowly move them closer, then farther (like an accordion)</li>
+                <li>Feel the resistance? The warmth? The tingling? <strong>That's vibration.</strong></li>
+                <li>Close your eyes. Focus only on the sensation between your palms.</li>
+                <li>Continue for 2-3 minutes.</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Practice:</strong> 3x daily for 1 week. By day 7, you'll feel it instantly.</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Exercise 2: Body Scan</h4>
+            <ol>
+                <li>Sit or lie comfortably. Close eyes.</li>
+                <li>Bring attention to your left foot. Feel any sensation (tingling, warmth, pressure, pulsing)</li>
+                <li>Move to left ankle, calf, knee, thigh. Scan each area.</li>
+                <li>Continue up through torso, arms, neck, head.</li>
+                <li>Do not judge sensations. Just feel them.</li>
+                <li>These are not "just nerve signals." This is energy. This is vibration.</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Time:</strong> 10-15 minutes. Practice daily for 2 weeks.</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Exercise 3: Environmental Vibration</h4>
+            <ol>
+                <li>Enter a room. Stop. Close eyes for 10 seconds.</li>
+                <li>Ask: "What is the vibration of this space?"</li>
+                <li>Feel it: dense, light, agitated, calm, heavy, clear</li>
+                <li>Open eyes. Note what correlates (lighting, clutter, people, electronics)</li>
+                <li>Leave the room. Return. Does it feel different?</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Practice:</strong> Do this in every space you enter for 1 week. You'll become a vibration detector.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Raising Vibration (Deliberate Shift)</h2>
+        <p>Once you can feel vibration, you can change it. These are the most effective techniques (tested, not theoretical).</p>
+
+        <div class="technique-box">
+            <h4>Method 1: Breath (Fastest)</h4>
+            <ol>
+                <li>Sit upright. Spine straight.</li>
+                <li>Breathe rapidly through your nose (1-2 seconds per breath)</li>
+                <li>Make it deep — belly, not chest</li>
+                <li>Continue for 2-3 minutes (60-90 breaths)</li>
+                <li>Stop. Feel the shift. Vibration will be 2-4 points higher.</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Use when:</strong> You need a quick shift (before work, before social, before practice)</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Method 2: Light Visualization (Most Powerful)</h4>
+            <ol>
+                <li>Close eyes. Enter meditation posture.</li>
+                <li>Visualize brilliant white light above your head</li>
+                <li>On each inhale, draw the light down through your body</li>
+                <li>On each exhale, release darkness/density through your feet</li>
+                <li>Continue for 10-20 minutes</li>
+                <li>By the end, you will be glowing (others can feel it)</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Use when:</strong> Deep practice, before ritual, after low-vibration exposure</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Method 3: Sound/Vibration (Easiest)</h4>
+            <ol>
+                <li>Put on high-vibration music (classical, binaural beats, kirtan, certain electronic)</li>
+                <li>Or: chant a mantra (OM, EHEIEH, I AM)</li>
+                <li>Or: use a singing bowl, tuning fork, or gong</li>
+                <li>Let the sound vibrate through your body</li>
+                <li>Feel your vibration synchronize with the sound</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Use when:</strong> You're too tired for active practice. Sound does the work for you.</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Method 4: Affirmation/Identity (Most Underrated)</h4>
+            <ol>
+                <li>Stand in front of a mirror. Look yourself in the eyes.</li>
+                <li>Say (out loud): "I am light. I am clear. I am powerful."</li>
+                <li>Say it like you mean it. Not hopeful — declarative.</li>
+                <li>Repeat 10-20 times</li>
+                <li>Feel the shift. Your vibration will rise 1-3 points.</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Why it works:</strong> Words are vibration. Spoken with intent, they change your field.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Lowering Vibration (Grounding)</h2>
+        <p>Sometimes you need to come down. Too much high vibration = scattered, ungrounded, spacey. These bring you back to earth.</p>
+
+        <div class="technique-box">
+            <h4>Method 1: Earth Connection</h4>
+            <ol>
+                <li>Go outside. Stand barefoot on earth/grass/concrete (not wood, not carpet)</li>
+                <li>Visualize roots growing from your feet into the earth</li>
+                <li>Breathe slowly (4 counts in, 6 counts out)</li>
+                <li>Feel yourself anchored, stable, heavy</li>
+                <li>Continue for 5-10 minutes</li>
+            </ol>
+        </div>
+
+        <div class="technique-box">
+            <h4>Method 2: Heavy Food</h4>
+            <ol>
+                <li>Eat something dense: root vegetables, meat, bread, salt</li>
+                <li>Eat slowly. Feel the weight of it in your stomach.</li>
+                <li>Affirm: "I am grounded. I am stable. I am here."</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Use when:</strong> You're too "up" to function (can't sleep, can't focus, too energetic)</p>
+        </div>
+
+        <div class="technique-box">
+            <h4>Method 3: Physical Exertion</h4>
+            <ol>
+                <li>Exercise until you're tired (weights, running, yoga, sex)</li>
+                <li>Physical exhaustion grounds you faster than anything</li>
+                <li>Shower after. Feel the reset.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Reading Others' Vibrations</h2>
+        <p>Once you're sensitive to your own vibration, you can feel others'. This is not psychic — it's energetic perception.</p>
+
+        <div class="technique-box">
+            <h4>How to Feel Someone's Vibration</h4>
+            <ol>
+                <li>Be in a calm state yourself (vibration 6-7)</li>
+                <li>Look at the person (in person or photo)</li>
+                <li>Ask: "What is their vibration?"</li>
+                <li>Feel the first sensation that arises: dense, light, agitated, calm, warm, cold</li>
+                <li>Assign a number (1-10)</li>
+                <li>Check: does this match their behavior? (low vibe = tired/irritable, high vibe = radiant/engaged)</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Practice:</strong> Do this with everyone you meet for 2 weeks. You'll become accurate.</p>
+        </div>
+
+        <h3>Why This Matters</h3>
+        <ul>
+            <li><strong>Protection:</strong> You'll feel toxic people before they drain you. Avoid or shield.</li>
+            <li><strong>Alignment:</strong> You'll feel aligned people instantly. Seek them out.</li>
+            <li><strong>Healing:</strong> You'll feel where others are blocked. You can help (if appropriate).</li>
+            <li><strong>Manifestation:</strong> You'll feel when the universe is aligned with your intent. Act then.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Vibration & Manifestation</h2>
+        <p>This is the secret: <strong>you manifest what you vibrate, not what you want</strong>.</p>
+        <p>Wanting money while vibrating lack = no money. Wanting love while vibrating loneliness = no love. Wanting health while vibrating sickness = no health.</p>
+
+        <div class="technique-box">
+            <h4>Manifestation Protocol</h4>
+            <ol>
+                <li><strong>Clarify intent:</strong> What do you want? (Be specific)</li>
+                <li><strong>Check vibration:</strong> What number are you now?</li>
+                <li><strong>Raise to match:</strong> Use breath, light, sound to raise vibration to 8-9</li>
+                <li><strong>Feel it done:</strong> In high vibration, feel the desire as already fulfilled</li>
+                <li><strong>Release:</strong> Let go. The universe handles the how.</li>
+                <li><strong>Act:</strong> Take inspired action (you'll know what)</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Key:</strong> Do not try to manifest from low vibration. It won't work. Raise first, then manifest.</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Common Mistake</h4>
+            <p>People try to manifest from vibration 3-4 (lack, fear, desperation). This repels what they want.</p>
+            <p style="margin-top: 1rem;"><strong>Fix:</strong> Raise vibration first. Then manifest. Order matters.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Daily Vibration Practice</h2>
+        
+        <h3>Morning (5 min)</h3>
+        <ul>
+            <li>Check vibration on waking (record in journal)</li>
+            <li>3 minutes rapid breath (raise 2-3 points)</li>
+            <li>Set intention: "Today I maintain vibration 7+"</li>
+        </ul>
+
+        <h3>Midday (2 min)</h3>
+        <ul>
+            <li>Check vibration (just ask)</li>
+            <li>If below 6: 1 minute breath + affirmation</li>
+            <li>If 7+: maintain, don't interfere</li>
+        </ul>
+
+        <h3>Evening (10 min)</h3>
+        <ul>
+            <li>Check vibration</li>
+            <li>Light visualization (release the day's density)</li>
+            <li>Record in journal: what raised you, what lowered you</li>
+        </ul>
+
+        <h3>Weekly Review</h3>
+        <ul>
+            <li>What was your average vibration this week?</li>
+            <li>What were your highest moments? Recreate them.</li>
+            <li>What were your lowest moments? Avoid or reframe them.</li>
+            <li>Set intention for next week</li>
+        </ul>
+    </div>
+
+    <div class="symbols">☤ 🜚 ☽ ☉</div>
+
+    <div style="text-align: center; margin: 3rem 0;">
+        <p style="color: var(--gold); font-size: 1.2rem;">"Nothing rests; everything moves; everything vibrates."</p>
+        <p style="margin-top: 1rem;">— The Kybalion, Principle of Vibration</p>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="../index.html" class="back-link">← Back to Library</a>
+        <a href="meditation-manual.html" class="back-link" style="margin-left: 1rem;">🧘 Meditation →</a>
+        <a href="ritual-guide.html" class="back-link" style="margin-left: 1rem;">🔮 Ritual →</a>
+    </div>
+</body>
+</html>

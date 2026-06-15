@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Journal — Hermetic Library</title>
+    <style>
+        :root {
+            --void: #0a0a0f;
+            --deep-purple: #1a1a2e;
+            --midnight: #16213e;
+            --gold: #d4af37;
+            --text: #f0f0f0;
+            --muted: #888;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--void);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+        .entry-form {
+            background: var(--deep-purple);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .entry-form h3 {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            background: var(--midnight);
+            border: 1px solid var(--gold);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: inherit;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            background: var(--gold);
+            color: var(--void);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .entries {
+            margin-top: 3rem;
+        }
+        .entry {
+            background: var(--midnight);
+            border-left: 3px solid var(--gold);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .entry-date {
+            color: var(--gold);
+            font-weight: bold;
+        }
+        .entry-exercise {
+            color: var(--text);
+            font-style: italic;
+        }
+        .entry-field {
+            margin-bottom: 1rem;
+        }
+        .entry-label {
+            color: var(--gold);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .vibration-scale {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .vibration-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .vibration-dot.selected {
+            background: var(--gold);
+            color: var(--void);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--gold);
+            text-decoration: none;
+            border: 1px solid var(--gold);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .symbols {
+            text-align: center;
+            font-size: 2rem;
+            margin: 2rem 0;
+        }
+        .stats {
+            background: var(--deep-purple);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="symbols">☤ 🜚 ☽ ☉</div>
+
+    <h1>Practice Journal</h1>
+    <p class="subtitle">Track your progress on the Hermetic path</p>
+
+    <div class="stats" id="stats">
+        <div class="stat">
+            <div class="stat-value" id="totalEntries">0</div>
+            <div class="stat-label">Total Entries</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="avgVibration">-</div>
+            <div class="stat-label">Avg Vibration</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="totalMinutes">0</div>
+            <div class="stat-label">Minutes Practiced</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="currentStreak">0</div>
+            <div class="stat-label">Day Streak</div>
+        </div>
+    </div>
+
+    <div class="entry-form">
+        <h3>📓 New Entry</h3>
+        <form id="journalForm">
+            <label>Date & Time</label>
+            <input type="datetime-local" id="dateTime" required>
+
+            <label>Exercise Type</label>
+            <select id="exerciseType" required>
+                <option value="">Select...</option>
+                <option value="Meditation">Meditation</option>
+                <option value="Breath Work">Breath Work</option>
+                <option value="Energy Circulation">Energy Circulation (Middle Pillar)</option>
+                <option value="Vibration Work">Vibration Work</option>
+                <option value="Reality Testing">Reality Testing / Manifestation</option>
+                <option value="Study">Study / Reading</option>
+                <option value="Ritual">Ritual (Liber O, etc.)</option>
+                <option value="Combined">Combined Practice</option>
+            </select>
+
+            <label>Duration (minutes)</label>
+            <input type="number" id="duration" min="1" required>
+
+            <label>Vibration Before (1-10)</label>
+            <div class="vibration-scale" id="vibeBefore">
+                <!-- Generated by JS -->
+            </div>
+            <input type="hidden" id="vibeBeforeValue" required>
+
+            <label>Vibration After (1-10)</label>
+            <div class="vibration-scale" id="vibeAfter">
+                <!-- Generated by JS -->
+            </div>
+            <input type="hidden" id="vibeAfterValue" required>
+
+            <label>Observations</label>
+            <textarea id="observations" placeholder="What did you notice during practice? Sensations, thoughts, emotions, visions..."></textarea>
+
+            <label>Results / Synchronicities</label>
+            <textarea id="results" placeholder="Any manifestations, coincidences, insights, or notable events?"></textarea>
+
+            <label>Adjustments for Next Time</label>
+            <textarea id="adjustments" placeholder="What will you change or focus on next session?"></textarea>
+
+            <button type="submit">Save Entry</button>
+        </form>
+    </div>
+
+    <div class="entries" id="entries">
+        <h3 style="color: var(--gold); margin-bottom: 1.5rem;">📜 Previous Entries</h3>
+        <div id="entriesList"></div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="index.html" class="back-link">← Back to Library</a>
+    </div>
+
+    <script>
+        // Generate vibration scales
+        function createVibrationScale(containerId, hiddenId) {
+            const container = document.getElementById(containerId);
+            for (let i = 1; i <= 10; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'vibration-dot';
+                dot.textContent = i;
+                dot.onclick = () => selectVibration(containerId, hiddenId, i);
+                container.appendChild(dot);
+            }
+        }
+
+        function selectVibration(containerId, hiddenId, value) {
+            const container = document.getElementById(containerId);
+            const dots = container.querySelectorAll('.vibration-dot');
+            dots.forEach((dot, idx) => {
+                if (idx + 1 === value) {
+                    dot.classList.add('selected');
+                } else {
+                    dot.classList.remove('selected');
+                }
+            });
+            document.getElementById(hiddenId).value = value;
+        }
+
+        createVibrationScale('vibeBefore', 'vibeBeforeValue');
+        createVibrationScale('vibeAfter', 'vibeAfterValue');
+
+        // Set default datetime to now
+        document.getElementById('dateTime').value = new Date().toISOString().slice(0, 16);
+
+        // Load entries from localStorage
+        let entries = JSON.parse(localStorage.getItem('hermeticJournal') || '[]');
+
+        function saveEntries() {
+            localStorage.setItem('hermeticJournal', JSON.stringify(entries));
+            renderEntries();
+            updateStats();
+        }
+
+        function renderEntries() {
+            const list = document.getElementById('entriesList');
+            if (entries.length === 0) {
+                list.innerHTML = '<p style="color: var(--muted); text-align: center;">No entries yet. Start your practice!</p>';
+                return;
+            }
+
+            list.innerHTML = entries.slice().reverse().map(entry => `
+                <div class="entry">
+                    <div class="entry-header">
+                        <span class="entry-date">${new Date(entry.dateTime).toLocaleString('en-GB')}</span>
+                        <span class="entry-exercise">${entry.exerciseType}</span>
+                    </div>
+                    <div class="entry-field">
+                        <span class="entry-label">Duration:</span>
+                        ${entry.duration} minutes
+                    </div>
+                    <div class="entry-field">
+                        <span class="entry-label">Vibration:</span>
+                        ${entry.vibeBefore} → ${entry.vibeAfter} 
+                        ${entry.vibeAfter > entry.vibeBefore ? '📈' : entry.vibeAfter < entry.vibeBefore ? '📉' : '➡️'}
+                    </div>
+                    ${entry.observations ? `
+                    <div class="entry-field">
+                        <span class="entry-label">Observations:</span>
+                        <p>${entry.observations}</p>
+                    </div>
+                    ` : ''}
+                    ${entry.results ? `
+                    <div class="entry-field">
+                        <span class="entry-label">Results / Synchronicities:</span>
+                        <p>${entry.results}</p>
+                    </div>
+                    ` : ''}
+                    ${entry.adjustments ? `
+                    <div class="entry-field">
+                        <span class="entry-label">Adjustments:</span>
+                        <p>${entry.adjustments}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalEntries').textContent = entries.length;
+            
+            if (entries.length > 0) {
+                const avgAfter = entries.reduce((sum, e) => sum + parseInt(e.vibeAfter), 0) / entries.length;
+                document.getElementById('avgVibration').textContent = avgAfter.toFixed(1);
+                
+                const totalMin = entries.reduce((sum, e) => sum + parseInt(e.duration), 0);
+                document.getElementById('totalMinutes').textContent = totalMin;
+                
+                // Calculate streak
+                const dates = [...new Set(entries.map(e => new Date(e.dateTime).toDateString()))];
+                dates.sort((a, b) => new Date(b) - new Date(a));
+                let streak = 0;
+                const today = new Date().toDateString();
+                if (dates[0] === today || dates[0] === new Date(Date.now() - 86400000).toDateString()) {
+                    streak = 1;
+                    for (let i = 1; i < dates.length; i++) {
+                        const prevDate = new Date(dates[i-1]);
+                        const currDate = new Date(dates[i]);
+                        if (prevDate - currDate === 86400000) {
+                            streak++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                document.getElementById('currentStreak').textContent = streak;
+            }
+        }
+
+        // Form submission
+        document.getElementById('journalForm').onsubmit = (e) => {
+            e.preventDefault();
+            
+            const entry = {
+                dateTime: document.getElementById('dateTime').value,
+                exerciseType: document.getElementById('exerciseType').value,
+                duration: document.getElementById('duration').value,
+                vibeBefore: document.getElementById('vibeBeforeValue').value,
+                vibeAfter: document.getElementById('vibeAfterValue').value,
+                observations: document.getElementById('observations').value,
+                results: document.getElementById('results').value,
+                adjustments: document.getElementById('adjustments').value
+            };
+
+            entries.push(entry);
+            saveEntries();
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('dateTime').value = new Date().toISOString().slice(0, 16);
+            document.querySelectorAll('.vibration-dot').forEach(d => d.classList.remove('selected'));
+            document.getElementById('vibeBeforeValue').value = '';
+            document.getElementById('vibeAfterValue').value = '';
+            
+            alert('Entry saved! Keep walking the path. ☤');
+        };
+
+        // Initial render
+        renderEntries();
+        updateStats();
+    </script>
+</body>
+</html>

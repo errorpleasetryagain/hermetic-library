@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermetic Library — Adam Turton</title>
+    <style>
+        :root {
+            --void: #0a0a0f;
+            --deep-purple: #1a1a2e;
+            --midnight: #16213e;
+            --gold: #d4af37;
+            --silver: #c0c0c0;
+            --moon: #e8e8e8;
+            --sun: #ff6b35;
+            --text: #f0f0f0;
+            --muted: #888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--void);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 1;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--deep-purple) 0%, var(--void) 100%);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .caduceus {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Lora', 'Georgia', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--silver);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 1;
+            background: var(--midnight);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--gold);
+            position: sticky;
+            top: 0;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .external-link::after {
+            content: " ↗";
+            font-size: 0.8em;
+        }
+
+        /* Main content */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-family: 'Lora', 'Georgia', serif;
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2 .symbol {
+            font-size: 1.5rem;
+        }
+
+        /* Book cards */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .book-card h3 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .book-card .author {
+            color: var(--silver);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .book-card p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .book-card .tier {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gold);
+            color: var(--void);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .book-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--gold);
+            text-decoration: none;
+            border: 1px solid var(--gold);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .book-card a:hover {
+            background: var(--gold);
+            color: var(--void);
+        }
+
+        /* Practice journal */
+        .journal-entry {
+            background: var(--midnight);
+            border-left: 3px solid var(--gold);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .journal-entry h4 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .journal-entry .date {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Symbols */
+        .symbols {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 2rem;
+            margin: 2rem 0;
+            opacity: 0.8;
+        }
+
+        .symbol-item {
+            text-align: center;
+        }
+
+        .symbol-item span {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .symbol-item small {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--deep-purple);
+            border-top: 1px solid var(--gold);
+            color: var(--muted);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            nav ul { gap: 1rem; }
+            .book-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header>
+        <span class="caduceus">☤</span>
+        <h1>Hermetic Library</h1>
+        <p class="subtitle">As above, so below — As within, so without</p>
+        <div class="symbols">
+            <div class="symbol-item">
+                <span>☉</span>
+                <small>Sun</small>
+            </div>
+            <div class="symbol-item">
+                <span>☽</span>
+                <small>Moon</small>
+            </div>
+            <div class="symbol-item">
+                <span>🜂</span>
+                <small>Fire</small>
+            </div>
+            <div class="symbol-item">
+                <span>🜄</span>
+                <small>Water</small>
+            </div>
+            <div class="symbol-item">
+                <span>🜁</span>
+                <small>Air</small>
+            </div>
+            <div class="symbol-item">
+                <span>🜃</span>
+                <small>Earth</small>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#texts">📚 Texts</a></li>
+            <li><a href="study/syllabus.html" class="external-link">📖 Study Plan</a></li>
+            <li><a href="practice/meditation-manual.html" class="external-link">🧘 Meditation</a></li>
+            <li><a href="practice/vibration-guide.html" class="external-link">⚡ Vibration</a></li>
+            <li><a href="practice/ritual-guide.html" class="external-link">🔮 Ritual</a></li>
+            <li><a href="practice/journal.html" class="external-link">📓 Journal</a></li>
+            <li><a href="lodges/london-lodges.html" class="external-link">🏛️ Lodges</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="texts">
+            <h2><span class="symbol">📜</span> Core Texts</h2>
+            <div class="book-grid" id="bookGrid"></div>
+        </section>
+
+        <section id="syllabus">
+            <h2><span class="symbol">🎯</span> Study Syllabus</h2>
+            <div id="syllabusContent"></div>
+        </section>
+
+        <section id="practice">
+            <h2><span class="symbol">⚡</span> Daily Practice</h2>
+            <div id="practiceContent"></div>
+        </section>
+
+        <section id="lodges">
+            <h2><span class="symbol">🏛️</span> London Lodges</h2>
+            <div id="lodgeContent"></div>
+        </section>
+
+        <section id="journal">
+            <h2><span class="symbol">📓</span> Practice Journal</h2>
+            <div id="journalContent"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Hermetic Library — Adam Turton</p>
+        <p>Built by Tris (Hermes Agent)</p>
+        <p class="symbols" style="font-size: 1.5rem; margin-top: 1rem;">
+            ☤ 🜚 ☽ ☉
+        </p>
+    </footer>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            star.style.setProperty('--opacity', Math.random() * 0.8 + 0.2);
+            starsContainer.appendChild(star);
+        }
+
+        // Book data
+        const books = [
+            {
+                title: "Corpus Hermeticum — Book I: Poimandres",
+                author: "Hermes Trismegistus (Copenhaver translation)",
+                tier: "Tier 1 — Foundation",
+                description: "The vision of Poimandres (Divine Mind). Creation of the cosmos, descent of Man, ascent back to God. This is the foundation of all Hermetic philosophy.",
+                link: "texts/corpus-hermeticum-1.html",
+                local: true
+            },
+            {
+                title: "The Emerald Tablet",
+                author: "Hermes Trismegistus",
+                tier: "Tier 1 — Foundation",
+                description: "13 verses. The whole thing. Memorise it. The core of all Hermetic work: 'As above, so below.'",
+                link: "texts/emerald-tablet.html",
+                local: true
+            },
+            {
+                title: "The Kybalion — Seven Principles",
+                author: "Three Initiates (1908)",
+                tier: "Tier 1 — Foundation",
+                description: "Modern (not ancient) but influential. The 7 Principles: Mentalism, Vibration, Polarity, Rhythm, Cause & Effect, Gender, Correspondence.",
+                link: "texts/kybalion.html",
+                local: true
+            },
+            {
+                title: "Corpus Hermeticum — Complete",
+                author: "Hermes Trismegistus",
+                tier: "Tier 1 — Foundation",
+                description: "17 treatises. The actual source material (1st-3rd century AD). Read Copenhaver translation.",
+                link: "https://www.sacred-texts.com/chr/cham/index.htm",
+                local: false
+            },
+            {
+                title: "Initiation Into Hermetics",
+                author: "Franz Bardon",
+                tier: "Tier 2 — Practice",
+                description: "Step-by-step training. Not theory — actual exercises. Breath work, vibration, elemental work, reality manipulation. Takes years.",
+                link: "https://hermetic.com/bardon/iih",
+                local: false
+            },
+            {
+                title: "The Middle Pillar",
+                author: "Israel Regardie",
+                tier: "Tier 2 — Practice",
+                description: "Golden Dawn system. Energy circulation, vibration, divine names. Practical ceremonial magic.",
+                link: "https://archive.org/details/TheMiddlePillar",
+                local: false
+            },
+            {
+                title: "The Secret Doctrine of Freemasonry",
+                author: "Manly P. Hall (33°)",
+                tier: "Tier 3 — Masonic",
+                description: "33° Scottish Rite Mason. This is the real teaching, not the public version. Esoteric Masonry revealed.",
+                link: "https://www.sacred-texts.com/eso/sdm/index.htm",
+                local: false
+            },
+            {
+                title: "Morals and Dogma",
+                author: "Albert Pike (33°)",
+                tier: "Tier 3 — Masonic",
+                description: "Scottish Rite. Dense, but the chapters on Kabbalah, vibration, divine names — that's the gold.",
+                link: "https://www.sacred-texts.com/eso/md/index.htm",
+                local: false
+            },
+            {
+                title: "The Meaning of Masonry",
+                author: "W.L. Wilmshurst",
+                tier: "Tier 3 — Masonic",
+                description: "Best single book on Masonic philosophy (not history). Deep, not superficial.",
+                link: "https://www.phoenixmasonry.org/wilmshurst/the_meaning_of_masonry.htm",
+                local: false
+            },
+            {
+                title: "Liber O",
+                author: "Aleister Crowley",
+                tier: "Tier 2 — Practice",
+                description: "Pentagram ritual, vibration, astral work. Start here before heavier Crowley material.",
+                link: "https://www.sacred-texts.com/oto/liber-o.htm",
+                local: false
+            },
+            {
+                title: "The Stoic Hermetic Path",
+                author: "Modern synthesis",
+                tier: "Tier 1 — Foundation",
+                description: "Practical application. Stoicism + Hermeticism = practical philosophy for daily life.",
+                link: "../major-arcana/The_Stoic_Hermetic_Path.html",
+                local: true
+            }
+        ];
+
+        // Render books
+        const bookGrid = document.getElementById('bookGrid');
+        books.forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            const target = book.local ? '_self' : '_blank';
+            const icon = book.local ? '' : ' ↗';
+            card.innerHTML = `
+                <h3>${book.title}</h3>
+                <p class="author">${book.author}</p>
+                <span class="tier">${book.tier}</span>
+                <p style="margin-top: 1rem;">${book.description}</p>
+                <a href="${book.link}" target="${target}">Read${icon} →</a>
+            `;
+            bookGrid.appendChild(card);
+        });
+
+        // Syllabus
+        const syllabus = `
+            <div class="book-card" style="margin-bottom: 1.5rem;">
+                <h3>Weeks 1-4: Foundation</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>☤ Read <strong>Emerald Tablet</strong> (memorise it)</li>
+                    <li>☤ Read <strong>Kybalion</strong> (focus on 7 Principles)</li>
+                    <li>☤ Read <strong>Corpus Hermeticum</strong> (Books I, IV, IX, XIII)</li>
+                    <li>☤ Daily meditation: 10 minutes, build to 30</li>
+                    <li>☤ Journal: Record dreams, synchronicities, observations</li>
+                </ul>
+            </div>
+            <div class="book-card" style="margin-bottom: 1.5rem;">
+                <h3>Weeks 5-12: Practice Begins</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>☤ Start <strong>Initiation Into Hermetics</strong> (Step 1-3)</li>
+                    <li>☤ Breath work: Rhythmic breathing, 15 min daily</li>
+                    <li>☤ Vibration awareness: Feel your own energy</li>
+                    <li>☤ Read <strong>Middle Pillar</strong> (circulation exercises)</li>
+                    <li>☤ Journal: Track vibration shifts, energy work results</li>
+                </ul>
+            </div>
+            <div class="book-card" style="margin-bottom: 1.5rem;">
+                <h3>Months 4-6: Masonic Preparation</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>☤ Read <strong>Meaning of Masonry</strong> (Wilmshurst)</li>
+                    <li>☤ Read <strong>Secret Doctrine of Freemasonry</strong> (Hall)</li>
+                    <li>☤ Visit 3+ lodges (open evenings)</li>
+                    <li>☤ Continue IIH (Step 4-7)</li>
+                    <li>☤ Journal: Lodge impressions, brother observations</li>
+                </ul>
+            </div>
+            <div class="book-card" style="margin-bottom: 1.5rem;">
+                <h3>Months 7-12: Deep Work</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>☤ Complete IIH Step 1-10</li>
+                    <li>☤ Read <strong>Morals and Dogma</strong> (selected chapters)</li>
+                    <li>☤ Practice <strong>Liber O</strong> (pentagram ritual)</li>
+                    <li>☤ Reality testing: Small manifestations daily</li>
+                    <li>☤ Journal: Full practice log, results, adjustments</li>
+                </ul>
+            </div>
+        `;
+        document.getElementById('syllabusContent').innerHTML = syllabus;
+
+        // Practice
+        const practice = `
+            <div class="journal-entry">
+                <h4>☀️ Morning Practice (20-30 min)</h4>
+                <ol style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>Silent meditation (10 min)</li>
+                    <li>Rhythmic breathing (5 min)</li>
+                    <li>Set daily intention (2 min)</li>
+                    <li>Review synchronicities from dreams (3 min)</li>
+                </ol>
+            </div>
+            <div class="journal-entry">
+                <h4>🌙 Evening Practice (30-45 min)</h4>
+                <ol style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>Review the day (5 min)</li>
+                    <li>Energy circulation / Middle Pillar (15 min)</li>
+                    <li>Vibration check: What was my state today? (5 min)</li>
+                    <li>Journal: Results, observations, adjustments (10 min)</li>
+                    <li>Silent meditation before sleep (10 min)</li>
+                </ol>
+            </div>
+            <div class="journal-entry">
+                <h4>⚡ Weekly Practice</h4>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>One extended session (90+ min)</li>
+                    <li>Reality test: Set small intention, track manifestation</li>
+                    <li>Review journal entries for patterns</li>
+                    <li>Adjust practice based on results</li>
+                </ul>
+            </div>
+        `;
+        document.getElementById('practiceContent').innerHTML = practice;
+
+        // Lodges (placeholder - will research properly)
+        const lodges = `
+            <div class="book-card" style="margin-bottom: 1.5rem;">
+                <h3>Research Needed</h3>
+                <p>I'll research specific London lodges known for esoteric work. This will include:</p>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li>UGLE lodges in Central London</li>
+                    <li>Scottish Rite chapters</li>
+                    <li>Lodges with strong philosophical focus</li>
+                    <li>Open evening schedules</li>
+                    <li>Contact information</li>
+                </ul>
+                <p style="margin-top: 1rem; color: var(--gold);">This section will be populated with real lodge data.</p>
+            </div>
+        `;
+        document.getElementById('lodgeContent').innerHTML = lodges;
+
+        // Journal template
+        const journal = `
+            <div class="journal-entry">
+                <h4>📓 How to Use This Journal</h4>
+                <p style="margin-top: 1rem;">Create a new entry for each practice session. Include:</p>
+                <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                    <li><strong>Date & Time:</strong> When did you practice?</li>
+                    <li><strong>Exercise:</strong> What did you do? (meditation, breath work, energy work, etc.)</li>
+                    <li><strong>Duration:</strong> How long?</li>
+                    <li><strong>Vibration State:</strong> Before and after (1-10 scale)</li>
+                    <li><strong>Observations:</strong> What did you notice? (sensations, thoughts, emotions)</li>
+                    <li><strong>Results:</strong> Any manifestations, synchronicities, insights?</li>
+                    <li><strong>Adjustments:</strong> What will you change next time?</li>
+                </ul>
+            </div>
+            <div class="journal-entry">
+                <h4>Template Entry</h4>
+                <p class="date">[Date: DD/MM/YYYY — Time: HH:MM]</p>
+                <p><strong>Exercise:</strong> [e.g., Rhythmic Breathing + Middle Pillar]</p>
+                <p><strong>Duration:</strong> [e.g., 35 minutes]</p>
+                <p><strong>Vibration Before:</strong> [e.g., 4/10 — scattered, tired]</p>
+                <p><strong>Vibration After:</strong> [e.g., 7/10 — centred, energised]</p>
+                <p><strong>Observations:</strong> [What you noticed during practice]</p>
+                <p><strong>Results:</strong> [Any synchronicities, manifestations, insights]</p>
+                <p><strong>Adjustments:</strong> [What to change next time]</p>
+            </div>
+        `;
+        document.getElementById('journalContent').innerHTML = journal;
+    </script>
+</body>
+</html>
